@@ -34,11 +34,13 @@ class ArenaPlugin < Plugin
   
   def createplayer(m,params)
     tempstats = rollstats()
-    tempplayer = Player.new(Stats.new(tempstats), m.sourcenick, m.sourcenick, STARTING_GOLD)
+   # m.reply(WEAPONSTORE.inspect)
+    m.reply(WEAPONSTORE['fists']['cost'])
+    tempplayer = Player.new(Stats.new(tempstats), 'woo', 'woo', 100)
     
     #@players[:m.sourcenick] = tempplayer
     m.reply "These Are your stats:\nSTR:#{tempstats[0]} DEX:#{tempstats[1]} CON:#{tempstats[2]} INT:#{tempstats[3]} WIS:#{tempstats[4]}"
-    m.reply "If you like your stats #arena confirm, otherwise #arena reroll to reroll"
+    #m.reply "If you like your stats #arena confirm, otherwise #arena reroll to reroll"
   end
   
   def reroll(m,params)
@@ -87,14 +89,8 @@ class Player
     @desciprtion = description
     @arena = false
     @weapon = Weapon.new("fists")
-    @gold = 100
+    @gold = gold
     @temp = true
-  end
-  def enter
-    @arena = true
-  end
-  def exit
-    @arena = false
   end
   attr_accessor :weapon
   attr_accessor :gold
@@ -102,7 +98,7 @@ class Player
 end
 
 class StatPoint
-  def intialize(value)
+  def initialize(value)
     @value = value
   end
   def bonus 
@@ -127,7 +123,7 @@ class Stats
 end
 
 class Item
-  def intialize(cost, type)
+  def initialize(cost, type)
     @cost = cost
     @type = type
   end
@@ -136,12 +132,12 @@ class Item
 end
 
 class Weapon < Item
-  def intialize(weaponid)
-    super(WEAPONSTORE[:weaponid][:cost], 'weapon')
-    @name = WEAPONSTORE[:weaponid][:name]
-    @description = WEAPONSTORE[:weaponid][:description]
-    @multiplier =  WEAPONSTORE[:weaponid][:multiplier]
-    @damage = WEAPONSTORE[:weaponid][:damage]
+  def initialize(weaponid)
+    super(WEAPONSTORE[weaponid][:cost], 'weapon')
+    @name = WEAPONSTORE[weaponid][:name]
+    @description = WEAPONSTORE[weaponid][:description]
+    @multiplier =  WEAPONSTORE[weaponid][:multiplier]
+    @damage = WEAPONSTORE[weaponid][:damage]
   end
   attr_accessor = :description
   attr_accessor = :name
