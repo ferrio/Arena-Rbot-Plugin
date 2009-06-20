@@ -3,7 +3,7 @@ WEAPONSTORE = {
     {
       :name => "Fists",
       :description => "This fool has no weapon!",
-      :value => 0,
+      :cost => 0,
       :type => "blunt",
       :damage => 2,
       :multiplier => 2
@@ -12,7 +12,7 @@ WEAPONSTORE = {
     {
       :name => "Broadsword",
       :description => "A huge sword",
-      :value => 10,
+      :cost => 10,
       :type => "slash",
       :damage => 8,
       :multiplier => 1
@@ -34,18 +34,20 @@ class ArenaPlugin < Plugin
   
   def createplayer(m,params)
     tempstats = rollstats()
-   # m.reply(WEAPONSTORE.inspect)
-    m.reply(WEAPONSTORE['fists']['cost'])
-    tempplayer = Player.new(Stats.new(tempstats), 'woo', 'woo', 100)
+    tempplayer = Player.new(Stats.new(tempstats), m.sourcenick, m.sourcenick, STARTING_GOLD)
     
-    #@players[:m.sourcenick] = tempplayer
+    @players[m.sourcenick] = tempplayer
+    
     m.reply "These Are your stats:\nSTR:#{tempstats[0]} DEX:#{tempstats[1]} CON:#{tempstats[2]} INT:#{tempstats[3]} WIS:#{tempstats[4]}"
-    #m.reply "If you like your stats #arena confirm, otherwise #arena reroll to reroll"
+    m.reply "If you like your stats #arena confirm, otherwise #arena reroll to reroll"
   end
   
   def reroll(m,params)
-    tempplayer = @players[:m.sourcenick]
-    m.reply tempplayer.stats.inspect
+    tempplayer = @players[m.sourcenick]
+    tempstats = rollstats()
+    tempplayer.stats = Stats.new(tempstats)
+    m.reply "These Are your stats:\nSTR:#{tempstats[0]} DEX:#{tempstats[1]} CON:#{tempstats[2]} INT:#{tempstats[3]} WIS:#{tempstats[4]}"
+    m.reply "If you like your stats #arena confirm, otherwise #arena reroll to reroll"
   end
   
   def rollstats
@@ -88,10 +90,11 @@ class Player
     @stats = stats
     @desciprtion = description
     @arena = false
-    @weapon = Weapon.new("fists")
+    @weapon = Weapon.new(:fists)
     @gold = gold
     @temp = true
   end
+  attr_accessor :stats
   attr_accessor :weapon
   attr_accessor :gold
   attr_accessor :arena
@@ -166,3 +169,4 @@ plugin.map 'arena'
 plugin.map 'arena clearstats', :action => 'clearstats'
 plugin.map 'arena load', :action => 'loadplayer'
 plugin.map 'arena create', :action => 'createplayer'
+plugin.map 'arena reroll', :action => 'reroll'
