@@ -50,6 +50,16 @@ class ArenaPlugin < Plugin
     m.reply "If you like your stats #arena confirm, otherwise #arena reroll to reroll"
   end
   
+  def confirm(m,params)
+    tempplayer = @players[m.sourcenick]
+    playerhash = Hash.new
+    playerhash[:player] = tempplayer
+ #   m.reply Marshal.dump(tempplayer)
+ #  m.reply(tempplayer.inspect)
+ @registry[:playerhash] = playerhash
+    m.reply "Your character has been saved"
+  end
+  
   def rollstats
     tempstats = Array.new
     tempsum = 0
@@ -170,3 +180,4 @@ plugin.map 'arena clearstats', :action => 'clearstats'
 plugin.map 'arena load', :action => 'loadplayer'
 plugin.map 'arena create', :action => 'createplayer'
 plugin.map 'arena reroll', :action => 'reroll'
+plugin.map 'arena confirm', :action => 'confirm'
